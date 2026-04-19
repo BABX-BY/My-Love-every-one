@@ -46,18 +46,20 @@
         transform: translateY(-2px);
       }
 
-      input.dark-input {
+      input.dark-input,
+      textarea.dark-input {
         background: rgba(0, 0, 0, 0.6);
         border: 2px solid rgba(236, 72, 153, 0.3);
         color: white;
         transition: all 0.3s ease;
       }
-      input.dark-input:focus {
+      input.dark-input:focus,
+      textarea.dark-input:focus {
         border-color: #ec4899;
         box-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
       }
 
-      /* เอฟเฟกต์ช่องกรอกรหัสสั่นเวลาพิมพ์ผิด */
+      /* เอฟเฟกต์สั่น */
       @keyframes shake {
         0%,
         100% {
@@ -118,10 +120,11 @@
         position: absolute;
       }
 
+      /* Grid Setup */
       .wall-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        grid-auto-rows: 120px;
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        grid-auto-rows: 130px;
         gap: 4px;
         width: 100vw;
         height: 100vh;
@@ -149,8 +152,11 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: opacity 1s ease-in-out;
-        filter: brightness(0.65);
+        transition: opacity 1.2s ease-in-out;
+        filter: brightness(0.5);
+        /* Anti-Lag & GPU Acceleration */
+        will-change: opacity;
+        backface-visibility: hidden;
       }
     </style>
   </head>
@@ -163,6 +169,7 @@
         class="px-6 py-4 rounded-full flex items-center gap-3 border border-pink-500/50 shadow-[0_0_20px_rgba(236,72,153,0.3)] bg-pink-900/40 backdrop-blur-md"
       >
         <i
+          id="alert-icon"
           class="fa-solid fa-face-sad-tear text-2xl text-pink-400 animate-bounce"
         ></i>
         <span id="alert-text" class="text-pink-100 font-medium"
@@ -190,7 +197,7 @@
         <h1 class="text-3xl font-bold text-white mb-2 tracking-wide">
           การเริ่มต้นความรักของบี๋และการ์ฟิลด์
         </h1>
-        <h4 class="text-md font-bold text-white mb-2 tracking-wide">
+        <h4 class="text-md font-bold text-gray-300 mb-2 tracking-wide">
           การ์ฟิลด์จำได้ไหมวันไหนที่เราได้เริ่มต้นที่จะคบกันเพื่อสร้างความรักและความทรงจำด้วยกัน
         </h4>
         <p class="text-pink-300/80 mb-6 text-sm font-light">
@@ -258,7 +265,7 @@
 
         <button
           onclick="nextPage(3)"
-          class="btn-pink px-8 py-3 rounded-full text-lg font-semibold flex items-center gap-3"
+          class="btn-pink px-8 py-3 rounded-full text-lg font-semibold flex items-center gap-3 shadow-lg"
         >
           ไปดูช่วงเวลาที่เรามีความสุขด้วยกันนะค้าบ
           <i class="fa-solid fa-arrow-right"></i>
@@ -293,6 +300,7 @@
             เค้าอยากให้เธอได้เห็นความทรงจำเหล่านี้อีกครั้งนะค้าบ
             มันคือช่วงเวลาที่มีความสุขที่สุดของเราเลย
             และเค้าก็อยากเก็บทุกความทรงจำและอยากสร้างความทรงจำเหล่านี้กับเธอต่อไปเรื่อยๆ
+            <br />
             เค้าชอบที่ได้เห็นเธอยิ้มมีความสุขอยู่ในทุกๆรูป ทุกๆวิดีโอเลยนะค้าบ
             และเค้าก็อยากดูแลเธอเห็นรอยยิ้มของเธอแบบนี้ไปนานๆเลยนะ
           </p>
@@ -313,7 +321,7 @@
             <i class="fa-solid fa-arrow-left mr-2"></i> หน้าก่อนหน้า
           </button>
           <button
-            onclick="nextPage(5)"
+            onclick="nextPage(4)"
             class="w-full md:w-auto btn-pink text-white px-10 py-3 rounded-full font-semibold shadow-[0_0_20px_rgba(236,72,153,0.4)]"
           >
             ไปด้วยกันต่อนะค้าบ ❤️
@@ -323,10 +331,10 @@
     </section>
 
     <section
-      id="slide-5"
+      id="slide-4"
       class="hidden min-h-screen relative overflow-hidden bg-black flex items-center justify-center md:justify-end p-4 md:p-12 md:pr-24"
     >
-      <div id="wall-5" class="wall-grid absolute inset-0 z-0 opacity-60"></div>
+      <div id="wall-4" class="wall-grid absolute inset-0 z-0 opacity-60"></div>
 
       <div
         class="relative z-10 text-center glass-card p-8 md:p-14 rounded-[2.5rem] w-full max-w-md mx-4 md:mx-0"
@@ -355,15 +363,76 @@
         <p class="text-pink-400/80 mt-3 handwritten text-3xl">
           ...เค้าอยากมีเธออยู่ในชีวิตเค้าไปนานๆเลยนะค้าบ 💕
         </p>
-        <button
-          onclick="prevPage()"
-          class="mt-12 text-gray-400 hover:text-pink-400 text-sm font-semibold transition-colors flex items-center justify-center w-full gap-2 group"
+
+        <div class="flex flex-col gap-4 mt-10">
+          <button
+            onclick="nextPage(5)"
+            class="btn-pink w-full text-white font-semibold py-4 rounded-xl active:scale-95 text-lg"
+          >
+            <i class="fa-regular fa-envelope mr-2"></i>
+            มีอะไรอยากจะบอกเค้าไหม? 💌
+          </button>
+          <button
+            onclick="prevPage()"
+            class="text-gray-400 hover:text-pink-400 text-sm font-semibold transition-colors flex items-center justify-center w-full gap-2 group mt-2"
+          >
+            <i
+              class="fa-solid fa-rotate-left group-hover:-rotate-90 transition-transform duration-300"
+            ></i>
+            ย้อนกลับไปดูความทรงจำ
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="slide-5"
+      class="hidden min-h-screen relative overflow-hidden bg-black flex items-center justify-center p-4 md:p-12"
+    >
+      <div id="wall-5" class="wall-grid absolute inset-0 z-0 opacity-60"></div>
+
+      <div
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl h-[500px] bg-[#050505] rounded-[100%] blur-[100px] z-0"
+      ></div>
+
+      <div
+        class="relative z-10 text-center glass-card p-8 md:p-12 rounded-[2.5rem] w-full max-w-xl mx-4"
+      >
+        <h2
+          class="handwritten text-6xl md:text-7xl text-pink-500 mb-4 drop-shadow-[0_0_15px_rgba(236,72,153,0.4)]"
         >
-          <i
-            class="fa-solid fa-rotate-left group-hover:-rotate-90 transition-transform duration-300"
-          ></i>
-          ย้อนกลับไปดูความทรงจำ
-        </button>
+          สุดท้ายเธออยากบอกอะไรเค้าไหม.. 💌
+        </h2>
+        <p class="text-gray-200 text-lg mb-6">
+          ทุกครั้งที่เปิดเว็บนี้ขึ้นมา พิมพ์ความรู้สึกบอกเค้าทิ้งไว้ได้ตลอดเลยนะ
+          เค้าจะคอยรออ่านอยู่เสมอเลยค้าบ 
+        </p>
+        <p class="text-pink-400/80 mt-3 handwritten text-3xl">
+          แต่สิ่งที่เค้าจะอยากบอกเธอคือเค้ารักเธอมากๆเลยนะ และเค้าก็อยากให้เราอยู่ด้วยกันตลอดไปนะ 💕
+        </p>
+
+        <textarea
+          id="secret-message"
+          rows="5"
+          placeholder="มีอะไรอยากจะบอกเค้าไหม? 💖"
+          class="dark-input w-full p-5 rounded-2xl outline-none mb-6 resize-none handwritten text-2xl leading-relaxed"
+        ></textarea>
+
+        <div class="flex flex-col gap-4">
+          <button
+            onclick="submitSecretMessage()"
+            class="btn-pink w-full text-white font-semibold py-4 rounded-xl active:scale-95 text-lg"
+          >
+            <i class="fa-solid fa-paper-plane mr-2"></i>
+            ส่งจดหมาย 💖
+          </button>
+          <button
+            onclick="prevPage()"
+            class="text-gray-400 hover:text-pink-400 transition-colors text-sm underline mt-2"
+          >
+            ย้อนกลับไปหน้าเมื่อกี้
+          </button>
+        </div>
       </div>
     </section>
 
@@ -372,57 +441,101 @@
       const WEB_HOOK_URL =
         "https://discord.com/api/webhooks/1495037317600247891/3f5_f140FuhsyVLhBv6TeQx44komTDiN75SYjVCyAa8uCft7OMeLbgUYDeltOOgesP4Y";
 
+      // ดึงเฉพาะรูปภาพสำหรับทำกำแพงพื้นหลังเพื่อลดอาการกระตุก (Anti-Lag)
+      const imageOnlyMedia =
+        typeof allMedia !== "undefined"
+          ? allMedia.filter((m) => m.type === "image")
+          : [];
+
       function sendToDiscord(message) {
         fetch(WEB_HOOK_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ content: `💌 **Story Status:** ${message}` }),
+          body: JSON.stringify({ content: message }),
         }).catch((e) => console.log("Webhook error:", e));
       }
 
       let currentPage = 1;
       let galleryInterval;
-      let wallIntervals = { "wall-1": null, "wall-2": null, "wall-5": null };
+      let wallIntervals = {
+        "wall-1": null,
+        "wall-2": null,
+        "wall-4": null,
+        "wall-5": null,
+      };
 
       window.onload = () => {
         if (typeof allMedia !== "undefined") {
-          // ปรับให้สลับเร็วขึ้น และลดความน่าจะเป็นที่จะเป็นช่องว่างลง (ให้มีรูปเยอะขึ้น)
-          startWall("wall-1", 0.7, true, 800, 6);
+          startWall("wall-1", 0.7, true, 1000, 4);
         }
       };
 
-      function showCuteAlert(message) {
+      function showCuteAlert(message, type = "error", inputId = null) {
         const alertBox = document.getElementById("cute-alert");
         const alertText = document.getElementById("alert-text");
-        const inputField = document.getElementById("passcode");
+        const alertIcon = document.getElementById("alert-icon");
 
         alertText.innerText = message;
+
+        if (type === "success") {
+          alertIcon.className =
+            "fa-solid fa-heart text-2xl text-pink-400 animate-pulse";
+        } else {
+          alertIcon.className =
+            "fa-solid fa-face-sad-tear text-2xl text-pink-400 animate-bounce";
+        }
 
         alertBox.classList.remove("-translate-y-20", "opacity-0");
         alertBox.classList.add("translate-y-0", "opacity-100");
 
-        inputField.classList.add("error-shake");
-        inputField.value = "";
+        if (inputId) {
+          const inputField = document.getElementById(inputId);
+          inputField.classList.add("error-shake");
+          setTimeout(() => inputField.classList.remove("error-shake"), 500);
+        }
 
         setTimeout(() => {
           alertBox.classList.remove("translate-y-0", "opacity-100");
           alertBox.classList.add("-translate-y-20", "opacity-0");
-          inputField.classList.remove("error-shake");
         }, 3000);
       }
 
       function checkUnlock() {
         const code = document.getElementById("passcode").value;
-        const correctCode = "04092567"; // รหัสของคุณ
+        const correctCode = "04092567";
 
         if (code === correctCode) {
-          sendToDiscord("✅ แฟนปลดล็อกเข้าเว็บสำเร็จแล้ว!");
+          sendToDiscord(
+            "✅ **แจ้งเตือน:** บี๋ปลดล็อกเข้าเว็บสำเร็จแล้วครับผม!",
+          );
           nextPage(2);
         } else {
           showCuteAlert(
             "ใช่วันนั้นหรออ้วน ลองนึกดีๆนะ ถ้านึกไม่ออกทักมาถามเค้านะ 🥺💕",
+            "error",
+            "passcode",
           );
         }
+      }
+
+      function submitSecretMessage() {
+        const msgInput = document.getElementById("secret-message");
+        const msg = msgInput.value.trim();
+
+        if (!msg) {
+          showCuteAlert(
+            "พิมพ์ความรู้สึกให้เค้าชื่นใจหน่อยสิอ้วน 🥺💕",
+            "error",
+            "secret-message",
+          );
+          return;
+        }
+
+        const formattedMessage = `💌 **จดหมายรักจากบี๋ถึงการ์ฟิลด์!** 💌\n\`\`\`${msg}\`\`\`\n*ส่งเมื่อ: ${new Date().toLocaleString("th-TH")}*`;
+        sendToDiscord(formattedMessage);
+
+        showCuteAlert("เค้าได้รับข้อความแล้วนะค้าบ รักอ้วนนะ! 💖", "success");
+        msgInput.value = "";
       }
 
       function nextPage(num) {
@@ -441,24 +554,21 @@
           next.classList.remove("hidden");
           window.scrollTo(0, 0);
 
-          // อัปเดตความถี่และจำนวนช่องให้กระตือรือร้นขึ้นทั้งหมด
-          if (num === 1) startWall("wall-1", 0.7, true, 800, 6);
-          if (num === 2) startWall("wall-2", 0.4, false, 600, 8);
+          if (num === 1) startWall("wall-1", 0.7, true, 1000, 4);
+          if (num === 2) startWall("wall-2", 0.4, false, 800, 5);
           if (num === 3) startGalleryCollage();
-          if (num === 5) startWall("wall-5", 0, false, 400, 12);
+          if (num === 4) startWall("wall-4", 0, false, 600, 8); // หน้า 4 (I Love You) รูปเต็ม
+          if (num === 5) startWall("wall-5", 0, false, 600, 8); // หน้า 5 (ส่งข้อความ) รูปเต็ม
         }
       }
 
       function prevPage() {
         if (currentPage <= 2) return;
-        if (currentPage === 5) {
-          nextPage(3);
-          return;
-        }
         nextPage(currentPage - 1);
-        sendToDiscord(`⏪ แฟนย้อนกลับไปดูหน้าก่อนหน้า`);
+        sendToDiscord(`⏪ **แจ้งเตือน:** บี๋ย้อนกลับไปดูหน้าก่อนหน้า`);
       }
 
+      // ระบบ Memory Wall รูปภาพ (Anti-Lag)
       function startWall(
         containerId,
         emptyProb,
@@ -467,16 +577,16 @@
         updateCount,
       ) {
         const container = document.getElementById(containerId);
-        if (!container) return;
+        if (!container || imageOnlyMedia.length === 0) return;
         container.innerHTML = "";
         clearInterval(wallIntervals[containerId]);
 
         const isMobile = window.innerWidth < 768;
-        const cellSize = isMobile ? 120 : 180;
+        const cellSize = isMobile ? 130 : 180;
 
         const cols = Math.floor(window.innerWidth / cellSize) + 1;
         const rows = Math.floor(window.innerHeight / cellSize) + 1;
-        const totalCells = Math.max(30, cols * rows + 10);
+        const totalCells = Math.max(20, cols * rows + 5); // สร้างเท่าที่จำเป็น
 
         for (let i = 0; i < totalCells; i++) {
           const cell = document.createElement("div");
@@ -484,7 +594,7 @@
           cell.id = `${containerId}-cell-${i}`;
 
           if (Math.random() > emptyProb) {
-            swapMediaInCell(cell, 0, isBlinking); // โหลดครั้งแรกบังคับใส่รูปไปก่อนถ้ามันผ่าน prob
+            swapMediaInCell(cell, 0, isBlinking);
           }
           container.appendChild(cell);
         }
@@ -504,7 +614,6 @@
 
       function swapMediaInCell(cell, emptyProb, isBlinking) {
         const shouldBeEmpty = Math.random() < emptyProb;
-        // เก็บรูป/วิดีโอเดิมที่อยู่ในช่องนั้นๆ ไว้เคลียร์ทีหลัง
         const currentMedia = cell.querySelectorAll(".wall-media");
 
         if (shouldBeEmpty) {
@@ -512,47 +621,41 @@
             el.style.opacity = "0";
             setTimeout(() => {
               if (el.parentNode === cell) cell.removeChild(el);
-            }, 1000);
+            }, 1200);
           });
           return;
         }
 
-        // --- ถ้าช่องนั้นไม่ถูกสั่งให้ว่าง ก็ใส่รูปใหม่ลงไปเลย (บังคับสลับเปลี่ยนรูปเสมอ) ---
+        // พื้นหลังใช้เฉพาะรูปภาพเท่านั้น (Anti-Lag)
         const randomMedia =
-          allMedia[Math.floor(Math.random() * allMedia.length)];
-        const newMedia = document.createElement(
-          randomMedia.type === "video" ? "video" : "img",
-        );
+          imageOnlyMedia[Math.floor(Math.random() * imageOnlyMedia.length)];
+        const newMedia = document.createElement("img");
         newMedia.src = randomMedia.src;
 
         let classes = "wall-media opacity-0";
         if (isBlinking) classes += " anim-memory-blink";
         newMedia.className = classes;
 
-        if (randomMedia.type === "video") {
-          newMedia.autoplay = true;
-          newMedia.muted = true;
-          newMedia.loop = true;
-          newMedia.playsInline = true;
-        }
-
         cell.appendChild(newMedia);
 
-        setTimeout(() => {
-          newMedia.classList.remove("opacity-0");
-        }, 50);
+        // รอให้เพิ่มเข้า DOM แล้วค่อยแสดงให้สมูท
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            newMedia.classList.remove("opacity-0");
+          }, 50);
+        });
 
-        // --- ลบรูปเก่าออกให้สมูท (รับรองว่ารูปใหม่มาแทนที่รูปเก่าตลอด) ---
         if (currentMedia.length > 0) {
           currentMedia.forEach((el) => {
             el.style.opacity = "0";
             setTimeout(() => {
               if (el.parentNode === cell) cell.removeChild(el);
-            }, 1000);
+            }, 1200);
           });
         }
       }
 
+      // หน้า 3 Gallery (ใส่วิดีโอได้เต็มที่ เพราะมีจำกัดแค่ 15 ช่อง)
       function startGalleryCollage() {
         const container = document.getElementById("gallery-collage");
         container.innerHTML = "";
@@ -601,9 +704,10 @@
       window.addEventListener("resize", () => {
         clearTimeout(window.resizeTimer);
         window.resizeTimer = setTimeout(() => {
-          if (currentPage === 1) startWall("wall-1", 0.7, true, 800, 6);
-          else if (currentPage === 2) startWall("wall-2", 0.4, false, 600, 8);
-          else if (currentPage === 5) startWall("wall-5", 0, false, 400, 12);
+          if (currentPage === 1) startWall("wall-1", 0.7, true, 1000, 4);
+          else if (currentPage === 2) startWall("wall-2", 0.4, false, 800, 5);
+          else if (currentPage === 4) startWall("wall-4", 0, false, 600, 8);
+          else if (currentPage === 5) startWall("wall-5", 0, false, 600, 8);
         }, 300);
       });
     </script>
