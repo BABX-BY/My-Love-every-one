@@ -9,7 +9,6 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
       rel="stylesheet"
     />
-    <script src="https://www.youtube.com/iframe_api"></script>
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Caveat:wght@700&display=swap");
 
@@ -169,7 +168,10 @@
     </style>
   </head>
   <body class="bg-[#050505] text-gray-100">
-    <div id="youtube-audio" class="hidden"></div>
+    <audio id="bgMusic" loop>
+      <source src="GAVIND - A ROCKET TO THE MOONOfficial MV.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
 
     <button
       id="music-toggle-btn"
@@ -460,42 +462,10 @@
     <script src="all-media-data.js"></script>
     <script>
       // ==========================================
-      // YouTube Music Player Logic
+      // Audio Player Logic (เสถียรสุดๆ เล่นไฟล์ตรง)
       // ==========================================
-      let ytPlayer;
+      let bgMusic = document.getElementById("bgMusic");
       let isMusicMuted = false;
-      let isPlayerReady = false;
-      let userHasStarted = false;
-
-      function onYouTubeIframeAPIReady() {
-        ytPlayer = new YT.Player("youtube-audio", {
-          height: "0",
-          width: "0",
-          videoId: "3aCctY3DGac", // รหัสเพลง
-          playerVars: {
-            autoplay: 0,
-            controls: 0,
-            loop: 1,
-            playlist: "3aCctY3DGac",
-          },
-          events: {
-            onReady: onPlayerReady,
-          },
-        });
-      }
-
-      function onPlayerReady(event) {
-        isPlayerReady = true;
-        ytPlayer.setVolume(50);
-
-        // ถ้าแฟนกดปุ่มก่อนที่เพลงจะโหลดเสร็จ ให้เล่นเพลงทันที
-        if (userHasStarted) {
-          ytPlayer.playVideo();
-          document
-            .getElementById("music-toggle-btn")
-            .classList.remove("hidden");
-        }
-      }
 
       function startEverything() {
         const overlay = document.getElementById("start-overlay");
@@ -504,34 +474,24 @@
           overlay.classList.add("hidden");
         }, 1000);
 
-        userHasStarted = true;
-
-        if (
-          isPlayerReady &&
-          ytPlayer &&
-          typeof ytPlayer.playVideo === "function"
-        ) {
-          ytPlayer.playVideo();
-          document
-            .getElementById("music-toggle-btn")
-            .classList.remove("hidden");
-        }
+        // เล่นเพลงจากไฟล์ mp3
+        bgMusic.volume = 0.5;
+        bgMusic.play().catch((e) => console.log("Audio play prevented:", e));
+        document.getElementById("music-toggle-btn").classList.remove("hidden");
 
         sendToDiscord(
-          "🎁 **แจ้งเตือน:** บี๋กดรับของขวัญแล้ว (เข้าสู่หน้าล็อกอิน)!",
+          "🎁 **แจ้งเตือน:** บี๋กดรับของขวัญแล้ว (เข้าสู่หน้าล็อกอินและเปิดเพลง)!",
         );
       }
 
       function toggleMusic() {
-        if (!ytPlayer) return;
         const icon = document.getElementById("music-icon");
-
         if (isMusicMuted) {
-          ytPlayer.unMute();
+          bgMusic.play();
           isMusicMuted = false;
           icon.className = "fa-solid fa-music spin-music text-xl";
         } else {
-          ytPlayer.mute();
+          bgMusic.pause();
           isMusicMuted = true;
           icon.className = "fa-solid fa-volume-xmark text-xl";
         }
@@ -562,7 +522,6 @@
         5: "หน้าส่งจดหมายความในใจ",
       };
 
-      // โหลดหน้าจอ 1 ทันทีเพื่อให้ทะลุเห็นพื้นหลังตั้งแต่ Overlay
       window.onload = () => {
         if (typeof allMedia !== "undefined") {
           startWall("wall-1", 0.7, true, 1000, 4);
@@ -611,9 +570,7 @@
         const correctCode = "04092567";
 
         if (code === correctCode) {
-          sendToDiscord(
-            "✅ **แจ้งเตือน:** มีคนปลดล็อกเข้าเว็บสำเร็จแล้ว!",
-          );
+          sendToDiscord("✅ **แจ้งเตือน:** บี๋ปลดล็อกเข้าเว็บสำเร็จแล้ว!");
           nextPage(2);
         } else {
           showCuteAlert(
