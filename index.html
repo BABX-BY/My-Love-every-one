@@ -480,7 +480,7 @@
         document.getElementById("music-toggle-btn").classList.remove("hidden");
 
         sendToDiscord(
-          "🎁 **แจ้งเตือน:** บี๋กดรับของขวัญแล้ว (เข้าสู่หน้าล็อกอินและเปิดเพลง)!",
+          "🎁 **แจ้งเตือน:** กดรับของขวัญแล้ว (เข้าสู่หน้าล็อกอินและเปิดเพลง)!",
         );
       }
 
@@ -570,7 +570,7 @@
         const correctCode = "04092567";
 
         if (code === correctCode) {
-          sendToDiscord("✅ **แจ้งเตือน:** บี๋ปลดล็อกเข้าเว็บสำเร็จแล้ว!");
+          sendToDiscord("✅ **แจ้งเตือน:** มีคนปลดล็อกเข้าเว็บสำเร็จแล้ว!");
           nextPage(2);
         } else {
           showCuteAlert(
@@ -594,7 +594,7 @@
           return;
         }
 
-        const formattedMessage = `💌 **ส่งจดหมายสิ่งที่จะบอกมาแล้วนะ!** 💌\n\`\`\`${msg}\`\`\`\n*ส่งเมื่อ: ${new Date().toLocaleString("th-TH")}*`;
+        const formattedMessage = `💌 **ส่งจดหมายสิ่งที่จะบอกมาแล้วนะว่า!** 💌\n\`\`\`${msg}\`\`\`\n*ส่งเมื่อ: ${new Date().toLocaleString("th-TH")}*`;
         sendToDiscord(formattedMessage);
 
         showCuteAlert("เค้าได้รับข้อความแล้วนะค้าบ รักอ้วนนะ! 💖", "success");
