@@ -9,6 +9,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
       rel="stylesheet"
     />
+    <script src="https://www.youtube.com/iframe_api"></script>
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Caveat:wght@700&display=swap");
 
@@ -165,21 +166,79 @@
         filter: brightness(0.5);
         will-change: opacity;
       }
+
+      /* -------------------------------------- */
+      /* CSS สำหรับแถบปรับเสียง (ส่วนที่เพิ่มใหม่) */
+      /* -------------------------------------- */
+      input[type="range"] {
+        -webkit-appearance: none;
+        width: 100%;
+        background: transparent;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background: #ffffff;
+        cursor: pointer;
+        margin-top: -6px;
+        box-shadow: 0 0 5px rgba(236, 72, 153, 0.8);
+      }
+      input[type="range"]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 2px;
+      }
+      .music-control-group:hover .volume-slider-container {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
     </style>
   </head>
   <body class="bg-[#050505] text-gray-100">
+    <div id="youtube-audio" class="hidden"></div>
+
     <audio id="bgMusic" loop>
-      <source src="GAVIND - A ROCKET TO THE MOONOfficial MV.mp3" type="audio/mpeg" />
+      <source
+        src="GAVIND - A ROCKET TO THE MOONOfficial MV.mp3"
+        type="audio/mpeg"
+      />
       Your browser does not support the audio element.
     </audio>
 
-    <button
-      id="music-toggle-btn"
-      onclick="toggleMusic()"
-      class="hidden fixed bottom-6 right-6 z-[100] w-14 h-14 bg-pink-500/80 backdrop-blur-md rounded-full text-white flex items-center justify-center shadow-[0_0_15px_rgba(236,72,153,0.5)] transition-transform hover:scale-110"
+    <div
+      id="music-controller"
+      class="hidden fixed bottom-6 right-6 z-[100] music-control-group flex flex-col items-center gap-3"
     >
-      <i id="music-icon" class="fa-solid fa-music spin-music text-xl"></i>
-    </button>
+      <div
+        class="volume-slider-container opacity-0 transform translate-y-4 pointer-events-none transition-all duration-300 bg-pink-900/60 backdrop-blur-md px-3 py-4 rounded-full h-32 flex justify-center border border-pink-500/30"
+      >
+        <input
+          type="range"
+          id="volume-slider"
+          min="0"
+          max="1"
+          step="0.05"
+          value="0.5"
+          oninput="changeVolume()"
+          style="
+            writing-mode: bt-lr;
+            -webkit-appearance: slider-vertical;
+            width: 8px;
+          "
+        />
+      </div>
+      <button
+        onclick="toggleMusic()"
+        class="w-14 h-14 bg-pink-500/80 backdrop-blur-md rounded-full text-white flex items-center justify-center shadow-[0_0_15px_rgba(236,72,153,0.5)] transition-transform hover:scale-110"
+      >
+        <i id="music-icon" class="fa-solid fa-music spin-music text-xl"></i>
+      </button>
+    </div>
 
     <div
       id="cute-alert"
@@ -214,6 +273,10 @@
       >
         แตะเพื่อเปิดกล่องความทรงจำ 💖
       </button>
+      <p class="text-pink-300/80 mt-4 text-md font-light handwritten text-lg">
+        มีเพลงด้วยนะค้าบ 🎶
+        <br />ปรับเสียงให้เหมาะด้วยนะ 🥰
+      </p>
     </div>
 
     <section
@@ -462,10 +525,11 @@
     <script src="all-media-data.js"></script>
     <script>
       // ==========================================
-      // Audio Player Logic (เสถียรสุดๆ เล่นไฟล์ตรง)
+      // Audio Player Logic
       // ==========================================
       let bgMusic = document.getElementById("bgMusic");
       let isMusicMuted = false;
+      let lastVolume = 0.5; // เพิ่มตัวแปรเก็บเสียงเดิมก่อนกดปิด
 
       function startEverything() {
         const overlay = document.getElementById("start-overlay");
@@ -474,24 +538,52 @@
           overlay.classList.add("hidden");
         }, 1000);
 
-        // เล่นเพลงจากไฟล์ mp3
-        bgMusic.volume = 0.5;
+        // ดึงค่าเสียงจากหลอดปรับเสียงตอนเริ่มต้น
+        let volumeSlider = document.getElementById("volume-slider");
+        bgMusic.volume = volumeSlider ? volumeSlider.value : 0.5;
         bgMusic.play().catch((e) => console.log("Audio play prevented:", e));
-        document.getElementById("music-toggle-btn").classList.remove("hidden");
+
+        // แก้ตรงนี้เพื่อให้แสดงชุดปุ่มควบคุมทั้งหมด
+        document.getElementById("music-controller").classList.remove("hidden");
 
         sendToDiscord(
           "🎁 **แจ้งเตือน:** กดรับของขวัญแล้ว (เข้าสู่หน้าล็อกอินและเปิดเพลง)!",
         );
       }
 
+      // ฟังก์ชันใหม่สำหรับแถบเลื่อนปรับเสียง
+      function changeVolume() {
+        let volumeSlider = document.getElementById("volume-slider");
+        if (!bgMusic || !volumeSlider) return;
+
+        bgMusic.volume = volumeSlider.value;
+        const icon = document.getElementById("music-icon");
+
+        if (bgMusic.volume > 0) {
+          isMusicMuted = false;
+          bgMusic.play();
+          icon.className = "fa-solid fa-music spin-music text-xl";
+        } else {
+          isMusicMuted = true;
+          icon.className = "fa-solid fa-volume-xmark text-xl";
+        }
+      }
+
+      // ปรับปรุงปุ่ม Mute ให้จำระดับเสียงได้
       function toggleMusic() {
         const icon = document.getElementById("music-icon");
+        let volumeSlider = document.getElementById("volume-slider");
+
         if (isMusicMuted) {
+          bgMusic.volume = lastVolume > 0 ? lastVolume : 0.5;
+          if (volumeSlider) volumeSlider.value = bgMusic.volume;
           bgMusic.play();
           isMusicMuted = false;
           icon.className = "fa-solid fa-music spin-music text-xl";
         } else {
+          lastVolume = bgMusic.volume;
           bgMusic.pause();
+          if (volumeSlider) volumeSlider.value = 0;
           isMusicMuted = true;
           icon.className = "fa-solid fa-volume-xmark text-xl";
         }
