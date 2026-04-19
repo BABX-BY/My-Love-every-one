@@ -9,6 +9,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
       rel="stylesheet"
     />
+    <script src="https://www.youtube.com/iframe_api"></script>
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Caveat:wght@700&display=swap");
 
@@ -24,10 +25,9 @@
         font-family: "Caveat", cursive;
       }
       .hidden {
-        display: none;
+        display: none !important;
       }
 
-      /* Dark Glassmorphism */
       .glass-card {
         background: rgba(20, 20, 20, 0.7);
         backdrop-filter: blur(16px);
@@ -59,7 +59,6 @@
         box-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
       }
 
-      /* เอฟเฟกต์สั่น */
       @keyframes shake {
         0%,
         100% {
@@ -110,6 +109,18 @@
         animation: memoryPulse 3.5s ease-in-out infinite;
       }
 
+      @keyframes spin-slow {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .spin-music {
+        animation: spin-slow 4s linear infinite;
+      }
+
       #gallery-collage {
         position: relative;
         width: 100%;
@@ -120,7 +131,6 @@
         position: absolute;
       }
 
-      /* Grid Setup */
       .wall-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -154,13 +164,21 @@
         object-fit: cover;
         transition: opacity 1.2s ease-in-out;
         filter: brightness(0.5);
-        /* Anti-Lag & GPU Acceleration */
         will-change: opacity;
-        backface-visibility: hidden;
       }
     </style>
   </head>
   <body class="bg-[#050505] text-gray-100">
+    <div id="youtube-audio" class="hidden"></div>
+
+    <button
+      id="music-toggle-btn"
+      onclick="toggleMusic()"
+      class="hidden fixed bottom-6 right-6 z-[100] w-14 h-14 bg-pink-500/80 backdrop-blur-md rounded-full text-white flex items-center justify-center shadow-[0_0_15px_rgba(236,72,153,0.5)] transition-transform hover:scale-110"
+    >
+      <i id="music-icon" class="fa-solid fa-music spin-music text-xl"></i>
+    </button>
+
     <div
       id="cute-alert"
       class="fixed top-10 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 transform -translate-y-20 opacity-0 pointer-events-none"
@@ -172,10 +190,28 @@
           id="alert-icon"
           class="fa-solid fa-face-sad-tear text-2xl text-pink-400 animate-bounce"
         ></i>
-        <span id="alert-text" class="text-pink-100 font-medium"
-          >ใช่วันนั้นหรออ้วน ลองนึกดีๆนะ ถ้านึกไม่ออกทักมาถามเค้านะ 🥺💕</span
-        >
+        <span id="alert-text" class="text-pink-100 font-medium">แจ้งเตือน</span>
       </div>
+    </div>
+
+    <div
+      id="start-overlay"
+      class="fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center transition-opacity duration-1000"
+    >
+      <div class="mb-8 animate-bounce">
+        <i
+          class="fa-solid fa-gift text-pink-500 text-7xl drop-shadow-[0_0_20px_rgba(236,72,153,0.8)]"
+        ></i>
+      </div>
+      <h2 class="handwritten text-5xl text-white mb-6">
+        มีของขวัญมาให้ค้าบ...
+      </h2>
+      <button
+        onclick="startEverything()"
+        class="btn-pink px-10 py-4 rounded-full text-xl font-semibold shadow-[0_0_25px_rgba(236,72,153,0.6)]"
+      >
+        แตะเพื่อเปิดกล่องความทรงจำ 💖
+      </button>
     </div>
 
     <section
@@ -242,11 +278,9 @@
         >
           เธอจำได้ไหมเมื่อก่อนเราต่างมีความทรงจำและรักกันมากขนาดไหน
         </h2>
-
         <div
           class="w-24 h-1 bg-gradient-to-r from-transparent via-pink-500 to-transparent mb-8 rounded-full"
         ></div>
-
         <div
           class="max-w-2xl text-gray-200 leading-relaxed text-xl md:text-2xl mb-10 glass-card border-pink-500/20 p-8 md:p-10 rounded-3xl handwritten relative"
         >
@@ -262,7 +296,6 @@
             <i class="fa-solid fa-quote-right"></i>
           </div>
         </div>
-
         <button
           onclick="nextPage(3)"
           class="btn-pink px-8 py-3 rounded-full text-lg font-semibold flex items-center gap-3 shadow-lg"
@@ -305,12 +338,10 @@
             และเค้าก็อยากดูแลเธอเห็นรอยยิ้มของเธอแบบนี้ไปนานๆเลยนะ
           </p>
         </div>
-
         <div
           id="gallery-collage"
           class="relative rounded-3xl glass-card border border-pink-500/20 shadow-[0_0_50px_rgba(236,72,153,0.05)] inset-0 p-4"
         ></div>
-
         <div
           class="mt-8 flex flex-col md:flex-row justify-center items-center gap-4 z-20 relative"
         >
@@ -335,7 +366,6 @@
       class="hidden min-h-screen relative overflow-hidden bg-black flex items-center justify-center md:justify-end p-4 md:p-12 md:pr-24"
     >
       <div id="wall-4" class="wall-grid absolute inset-0 z-0 opacity-60"></div>
-
       <div
         class="relative z-10 text-center glass-card p-8 md:p-14 rounded-[2.5rem] w-full max-w-md mx-4 md:mx-0"
       >
@@ -363,14 +393,13 @@
         <p class="text-pink-400/80 mt-3 handwritten text-3xl">
           ...เค้าอยากมีเธออยู่ในชีวิตเค้าไปนานๆเลยนะค้าบ 💕
         </p>
-
         <div class="flex flex-col gap-4 mt-10">
           <button
             onclick="nextPage(5)"
             class="btn-pink w-full text-white font-semibold py-4 rounded-xl active:scale-95 text-lg"
           >
-            <i class="fa-regular fa-envelope mr-2"></i>
-            มีอะไรอยากจะบอกเค้าไหม? 💌
+            <i class="fa-regular fa-envelope mr-2"></i> มีอะไรอยากจะบอกเค้าไหม?
+            💌
           </button>
           <button
             onclick="prevPage()"
@@ -390,41 +419,33 @@
       class="hidden min-h-screen relative overflow-hidden bg-black flex items-center justify-center p-4 md:p-12"
     >
       <div id="wall-5" class="wall-grid absolute inset-0 z-0 opacity-60"></div>
-
       <div
         class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl h-[500px] bg-[#050505] rounded-[100%] blur-[100px] z-0"
       ></div>
-
       <div
         class="relative z-10 text-center glass-card p-8 md:p-12 rounded-[2.5rem] w-full max-w-xl mx-4"
       >
         <h2
           class="handwritten text-6xl md:text-7xl text-pink-500 mb-4 drop-shadow-[0_0_15px_rgba(236,72,153,0.4)]"
         >
-          สุดท้ายเธออยากบอกอะไรเค้าไหม.. 💌
+          ความในใจ... 💌
         </h2>
         <p class="text-gray-200 text-lg mb-6">
           ทุกครั้งที่เปิดเว็บนี้ขึ้นมา พิมพ์ความรู้สึกบอกเค้าทิ้งไว้ได้ตลอดเลยนะ
-          เค้าจะคอยรออ่านอยู่เสมอเลยค้าบ 
+          เค้าจะคอยรออ่านอยู่เสมอเลยค้าบ
         </p>
-        <p class="text-pink-400/80 mt-3 handwritten text-3xl">
-          แต่สิ่งที่เค้าจะอยากบอกเธอคือเค้ารักเธอมากๆเลยนะ และเค้าก็อยากให้เราอยู่ด้วยกันตลอดไปนะ 💕
-        </p>
-
         <textarea
           id="secret-message"
           rows="5"
-          placeholder="มีอะไรอยากจะบอกเค้าไหม? 💖"
+          placeholder="พิมพ์ความรู้สึกของเธอตรงนี้ได้เลยนะ..."
           class="dark-input w-full p-5 rounded-2xl outline-none mb-6 resize-none handwritten text-2xl leading-relaxed"
         ></textarea>
-
         <div class="flex flex-col gap-4">
           <button
             onclick="submitSecretMessage()"
             class="btn-pink w-full text-white font-semibold py-4 rounded-xl active:scale-95 text-lg"
           >
-            <i class="fa-solid fa-paper-plane mr-2"></i>
-            ส่งจดหมาย 💖
+            <i class="fa-solid fa-paper-plane mr-2"></i> ส่งจดหมายรัก 💖
           </button>
           <button
             onclick="prevPage()"
@@ -438,14 +459,115 @@
 
     <script src="all-media-data.js"></script>
     <script>
+      // ==========================================
+      // YouTube Music Player Logic
+      // ==========================================
+      let ytPlayer;
+      let isMusicMuted = false;
+      let isPlayerReady = false;
+      let userHasStarted = false;
+
+      function onYouTubeIframeAPIReady() {
+        ytPlayer = new YT.Player("youtube-audio", {
+          height: "0",
+          width: "0",
+          videoId: "3aCctY3DGac", // รหัสเพลง
+          playerVars: {
+            autoplay: 0,
+            controls: 0,
+            loop: 1,
+            playlist: "3aCctY3DGac",
+          },
+          events: {
+            onReady: onPlayerReady,
+          },
+        });
+      }
+
+      function onPlayerReady(event) {
+        isPlayerReady = true;
+        ytPlayer.setVolume(50);
+
+        // ถ้าแฟนกดปุ่มก่อนที่เพลงจะโหลดเสร็จ ให้เล่นเพลงทันที
+        if (userHasStarted) {
+          ytPlayer.playVideo();
+          document
+            .getElementById("music-toggle-btn")
+            .classList.remove("hidden");
+        }
+      }
+
+      function startEverything() {
+        const overlay = document.getElementById("start-overlay");
+        overlay.style.opacity = "0";
+        setTimeout(() => {
+          overlay.classList.add("hidden");
+        }, 1000);
+
+        userHasStarted = true;
+
+        if (
+          isPlayerReady &&
+          ytPlayer &&
+          typeof ytPlayer.playVideo === "function"
+        ) {
+          ytPlayer.playVideo();
+          document
+            .getElementById("music-toggle-btn")
+            .classList.remove("hidden");
+        }
+
+        sendToDiscord(
+          "🎁 **แจ้งเตือน:** บี๋กดรับของขวัญแล้ว (เข้าสู่หน้าล็อกอิน)!",
+        );
+      }
+
+      function toggleMusic() {
+        if (!ytPlayer) return;
+        const icon = document.getElementById("music-icon");
+
+        if (isMusicMuted) {
+          ytPlayer.unMute();
+          isMusicMuted = false;
+          icon.className = "fa-solid fa-music spin-music text-xl";
+        } else {
+          ytPlayer.mute();
+          isMusicMuted = true;
+          icon.className = "fa-solid fa-volume-xmark text-xl";
+        }
+      }
+
+      // ==========================================
+      // System & Navigation Logic
+      // ==========================================
       const WEB_HOOK_URL =
         "https://discord.com/api/webhooks/1495037317600247891/3f5_f140FuhsyVLhBv6TeQx44komTDiN75SYjVCyAa8uCft7OMeLbgUYDeltOOgesP4Y";
-
-      // ดึงเฉพาะรูปภาพสำหรับทำกำแพงพื้นหลังเพื่อลดอาการกระตุก (Anti-Lag)
       const imageOnlyMedia =
         typeof allMedia !== "undefined"
           ? allMedia.filter((m) => m.type === "image")
           : [];
+      let currentPage = 1;
+      let galleryInterval;
+      let wallIntervals = {
+        "wall-1": null,
+        "wall-2": null,
+        "wall-4": null,
+        "wall-5": null,
+      };
+      const pageNames = {
+        1: "หน้าแรก (ใส่รหัส)",
+        2: "หน้าเกริ่นนำ (เธอจำได้ไหม...)",
+        3: "หน้าแกลเลอรีรวมความทรงจำ",
+        4: "หน้าบอกรัก (เค้ารักเธอนะ)",
+        5: "หน้าส่งจดหมายความในใจ",
+      };
+
+      // โหลดหน้าจอ 1 ทันทีเพื่อให้ทะลุเห็นพื้นหลังตั้งแต่ Overlay
+      window.onload = () => {
+        if (typeof allMedia !== "undefined") {
+          startWall("wall-1", 0.7, true, 1000, 4);
+        }
+      };
 
       function sendToDiscord(message) {
         fetch(WEB_HOOK_URL, {
@@ -455,28 +577,12 @@
         }).catch((e) => console.log("Webhook error:", e));
       }
 
-      let currentPage = 1;
-      let galleryInterval;
-      let wallIntervals = {
-        "wall-1": null,
-        "wall-2": null,
-        "wall-4": null,
-        "wall-5": null,
-      };
-
-      window.onload = () => {
-        if (typeof allMedia !== "undefined") {
-          startWall("wall-1", 0.7, true, 1000, 4);
-        }
-      };
-
       function showCuteAlert(message, type = "error", inputId = null) {
         const alertBox = document.getElementById("cute-alert");
         const alertText = document.getElementById("alert-text");
         const alertIcon = document.getElementById("alert-icon");
 
         alertText.innerText = message;
-
         if (type === "success") {
           alertIcon.className =
             "fa-solid fa-heart text-2xl text-pink-400 animate-pulse";
@@ -506,7 +612,7 @@
 
         if (code === correctCode) {
           sendToDiscord(
-            "✅ **แจ้งเตือน:** บี๋ปลดล็อกเข้าเว็บสำเร็จแล้วครับผม!",
+            "✅ **แจ้งเตือน:** มีคนปลดล็อกเข้าเว็บสำเร็จแล้ว!",
           );
           nextPage(2);
         } else {
@@ -531,7 +637,7 @@
           return;
         }
 
-        const formattedMessage = `💌 **จดหมายรักจากบี๋ถึงการ์ฟิลด์!** 💌\n\`\`\`${msg}\`\`\`\n*ส่งเมื่อ: ${new Date().toLocaleString("th-TH")}*`;
+        const formattedMessage = `💌 **ส่งจดหมายสิ่งที่จะบอกมาแล้วนะ!** 💌\n\`\`\`${msg}\`\`\`\n*ส่งเมื่อ: ${new Date().toLocaleString("th-TH")}*`;
         sendToDiscord(formattedMessage);
 
         showCuteAlert("เค้าได้รับข้อความแล้วนะค้าบ รักอ้วนนะ! 💖", "success");
@@ -539,11 +645,16 @@
       }
 
       function nextPage(num) {
+        if (num !== 1 && num !== currentPage) {
+          sendToDiscord(
+            `👀 **แอบดู:** ตอนนี้เปิดมาดู **${pageNames[num]}** แล้วนะค้าบ!`,
+          );
+        }
+
         currentPage = num;
         document
           .querySelectorAll("section")
           .forEach((s) => s.classList.add("hidden"));
-
         clearInterval(galleryInterval);
         Object.keys(wallIntervals).forEach((key) =>
           clearInterval(wallIntervals[key]),
@@ -557,18 +668,24 @@
           if (num === 1) startWall("wall-1", 0.7, true, 1000, 4);
           if (num === 2) startWall("wall-2", 0.4, false, 800, 5);
           if (num === 3) startGalleryCollage();
-          if (num === 4) startWall("wall-4", 0, false, 600, 8); // หน้า 4 (I Love You) รูปเต็ม
-          if (num === 5) startWall("wall-5", 0, false, 600, 8); // หน้า 5 (ส่งข้อความ) รูปเต็ม
+          if (num === 4) startWall("wall-4", 0, false, 600, 8);
+          if (num === 5) startWall("wall-5", 0, false, 600, 8);
         }
       }
 
       function prevPage() {
         if (currentPage <= 2) return;
+        if (currentPage === 5) {
+          nextPage(4);
+          return;
+        }
+        if (currentPage === 4) {
+          nextPage(3);
+          return;
+        }
         nextPage(currentPage - 1);
-        sendToDiscord(`⏪ **แจ้งเตือน:** บี๋ย้อนกลับไปดูหน้าก่อนหน้า`);
       }
 
-      // ระบบ Memory Wall รูปภาพ (Anti-Lag)
       function startWall(
         containerId,
         emptyProb,
@@ -583,16 +700,14 @@
 
         const isMobile = window.innerWidth < 768;
         const cellSize = isMobile ? 130 : 180;
-
         const cols = Math.floor(window.innerWidth / cellSize) + 1;
         const rows = Math.floor(window.innerHeight / cellSize) + 1;
-        const totalCells = Math.max(20, cols * rows + 5); // สร้างเท่าที่จำเป็น
+        const totalCells = Math.max(20, cols * rows + 5);
 
         for (let i = 0; i < totalCells; i++) {
           const cell = document.createElement("div");
           cell.className = "wall-cell";
           cell.id = `${containerId}-cell-${i}`;
-
           if (Math.random() > emptyProb) {
             swapMediaInCell(cell, 0, isBlinking);
           }
@@ -626,7 +741,6 @@
           return;
         }
 
-        // พื้นหลังใช้เฉพาะรูปภาพเท่านั้น (Anti-Lag)
         const randomMedia =
           imageOnlyMedia[Math.floor(Math.random() * imageOnlyMedia.length)];
         const newMedia = document.createElement("img");
@@ -638,7 +752,6 @@
 
         cell.appendChild(newMedia);
 
-        // รอให้เพิ่มเข้า DOM แล้วค่อยแสดงให้สมูท
         requestAnimationFrame(() => {
           setTimeout(() => {
             newMedia.classList.remove("opacity-0");
@@ -655,50 +768,46 @@
         }
       }
 
-      // หน้า 3 Gallery (ใส่วิดีโอได้เต็มที่ เพราะมีจำกัดแค่ 15 ช่อง)
       function startGalleryCollage() {
         const container = document.getElementById("gallery-collage");
         container.innerHTML = "";
         clearInterval(galleryInterval);
 
-        galleryItems = [...allMedia].sort(() => Math.random() - 0.5);
-        galleryIndex = 0;
+        let galleryItems = [...allMedia].sort(() => Math.random() - 0.5);
+        let galleryIndex = 0;
+
+        function showNextGalleryItem() {
+          if (galleryItems.length === 0) return;
+          const item = galleryItems[galleryIndex];
+          const collageItem = document.createElement("div");
+          collageItem.className =
+            "collage-item pop-in rounded-xl shadow-[0_10px_20px_rgba(0,0,0,0.5)] border border-pink-500/30 overflow-hidden bg-gray-900";
+
+          const rotation = (Math.random() - 0.5) * 25;
+          const top = 5 + Math.random() * 55;
+          const left = 5 + Math.random() * 70;
+          const isMobile = window.innerWidth < 768;
+          const minSize = isMobile ? 100 : 150;
+          const maxSize = isMobile ? 180 : 250;
+          const size = minSize + Math.random() * (maxSize - minSize);
+
+          collageItem.style.cssText = `top: ${top}%; left: ${left}%; width: ${size}px; height: ${size}px; --rotation: ${rotation}deg; z-index: ${galleryIndex};`;
+
+          if (item.type === "video") {
+            collageItem.innerHTML = `<video class="w-full h-full object-cover" autoplay muted loop playsinline><source src="${item.src}" type="video/mp4"></video>`;
+          } else {
+            collageItem.innerHTML = `<img src="${item.src}" class="w-full h-full object-cover">`;
+          }
+
+          container.appendChild(collageItem);
+          if (container.children.length > 15)
+            container.removeChild(container.firstChild);
+
+          galleryIndex = (galleryIndex + 1) % galleryItems.length;
+        }
 
         showNextGalleryItem();
         galleryInterval = setInterval(showNextGalleryItem, 1500);
-      }
-
-      function showNextGalleryItem() {
-        const container = document.getElementById("gallery-collage");
-        if (galleryItems.length === 0) return;
-
-        const item = galleryItems[galleryIndex];
-        const collageItem = document.createElement("div");
-        collageItem.className =
-          "collage-item pop-in rounded-xl shadow-[0_10px_20px_rgba(0,0,0,0.5)] border border-pink-500/30 overflow-hidden bg-gray-900";
-
-        const rotation = (Math.random() - 0.5) * 25;
-        const top = 5 + Math.random() * 55;
-        const left = 5 + Math.random() * 70;
-
-        const isMobile = window.innerWidth < 768;
-        const minSize = isMobile ? 100 : 150;
-        const maxSize = isMobile ? 180 : 250;
-        const size = minSize + Math.random() * (maxSize - minSize);
-
-        collageItem.style.cssText = `top: ${top}%; left: ${left}%; width: ${size}px; height: ${size}px; --rotation: ${rotation}deg; z-index: ${galleryIndex};`;
-
-        if (item.type === "video") {
-          collageItem.innerHTML = `<video class="w-full h-full object-cover" autoplay muted loop playsinline><source src="${item.src}" type="video/mp4"></video>`;
-        } else {
-          collageItem.innerHTML = `<img src="${item.src}" class="w-full h-full object-cover">`;
-        }
-
-        container.appendChild(collageItem);
-        if (container.children.length > 15)
-          container.removeChild(container.firstChild);
-
-        galleryIndex = (galleryIndex + 1) % galleryItems.length;
       }
 
       window.addEventListener("resize", () => {
