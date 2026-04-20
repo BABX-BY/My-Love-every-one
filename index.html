@@ -11,10 +11,11 @@
     />
     <script src="https://www.youtube.com/iframe_api"></script>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Caveat:wght@700&display=swap");
+      /* เปลี่ยนฟอนต์เป็น Prompt (ข้อความทั่วไป) และ Mali (ลายมือภาษาไทยน่ารักๆ) */
+      @import url("https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&family=Prompt:wght@300;400;500;600&display=swap");
 
       body {
-        font-family: "Kanit", sans-serif;
+        font-family: "Prompt", sans-serif;
         background-color: #050505;
         color: #ffffff;
         scroll-behavior: smooth;
@@ -22,7 +23,7 @@
       }
 
       .handwritten {
-        font-family: "Caveat", cursive;
+        font-family: "Mali", cursive;
       }
       .hidden {
         display: none !important;
@@ -295,7 +296,9 @@
             class="fa-solid fa-heart text-4xl drop-shadow-[0_0_15px_rgba(236,72,153,0.8)]"
           ></i>
         </div>
-        <h1 class="text-3xl font-bold text-white mb-2 tracking-wide">
+        <h1
+          class="text-3xl font-bold text-white mb-2 tracking-wide handwritten"
+        >
           การเริ่มต้นความรักของบี๋และการ์ฟิลด์
         </h1>
         <h4 class="text-md font-bold text-gray-300 mb-2 tracking-wide">
@@ -394,7 +397,9 @@
           <div
             class="w-16 h-0.5 bg-pink-500/50 mx-auto mt-4 mb-2 rounded-full"
           ></div>
-          <p class="text-gray-300 mt-2 text-md md:text-lg font-light">
+          <p
+            class="text-gray-300 mt-2 text-md md:text-lg font-light handwritten text-xl"
+          >
             เค้าอยากให้เธอได้เห็นความทรงจำเหล่านี้อีกครั้งนะค้าบ
             มันคือช่วงเวลาที่มีความสุขที่สุดของเราเลย
             และเค้าก็อยากเก็บทุกความทรงจำและอยากสร้างความทรงจำเหล่านี้กับเธอต่อไปเรื่อยๆ
@@ -442,7 +447,9 @@
         >
           เค้ารักเธอนะ ❤️
         </h2>
-        <p class="text-gray-200 font-medium text-lg md:text-xl mt-6">
+        <p
+          class="text-gray-200 font-medium text-lg md:text-xl mt-6 handwritten text-2xl leading-relaxed"
+        >
           เค้าขอโทษที่เค้าทำตัวไม่ดีหรืออาจจะมีไม่ฟังเธอบ้าง
           แต่เค้าก็รักเธอและยอมปรับปรุงตัวเพื่อเธอจริงๆนะ
           เค้าอยากดูแลเธอเค้าอยากมีเธออยู่ในอนาคต
@@ -493,16 +500,15 @@
         <h2
           class="handwritten text-6xl md:text-7xl text-pink-500 mb-4 drop-shadow-[0_0_15px_rgba(236,72,153,0.4)]"
         >
-          ความในใจ... 💌
+        มีอะไรที่เธออยากรบอกเค้าไหมค้าบ 💌
         </h2>
         <p class="text-gray-200 text-lg mb-6">
-          ทุกครั้งที่เปิดเว็บนี้ขึ้นมา พิมพ์ความรู้สึกบอกเค้าทิ้งไว้ได้ตลอดเลยนะ
-          เค้าจะคอยรออ่านอยู่เสมอเลยค้าบ
+          ทุกครั้งที่เปิดเว็บนี้ขึ้นมา ถ้ามีอะไรอยากบอกเค้า บอกได้เลยนะค้าบบ
         </p>
         <textarea
           id="secret-message"
           rows="5"
-          placeholder="พิมพ์ความรู้สึกของเธอตรงนี้ได้เลยนะ..."
+          placeholder="เค้ารักเธอนะ มีอะไรอยากบอกเค้าไหมค้าบ..."
           class="dark-input w-full p-5 rounded-2xl outline-none mb-6 resize-none handwritten text-2xl leading-relaxed"
         ></textarea>
         <div class="flex flex-col gap-4">
@@ -510,13 +516,13 @@
             onclick="submitSecretMessage()"
             class="btn-pink w-full text-white font-semibold py-4 rounded-xl active:scale-95 text-lg"
           >
-            <i class="fa-solid fa-paper-plane mr-2"></i> ส่งจดหมายรัก 💖
+            <i class="fa-solid fa-paper-plane mr-2"></i> ส่งจดหมายไปหาบี๋ 💖
           </button>
           <button
             onclick="prevPage()"
             class="text-gray-400 hover:text-pink-400 transition-colors text-sm underline mt-2"
           >
-            ย้อนกลับไปหน้าเมื่อกี้
+            ย้อนกลับไปหน้าบอกรัก
           </button>
         </div>
       </div>
@@ -543,7 +549,7 @@
         bgMusic.volume = volumeSlider ? volumeSlider.value : 0.5;
         bgMusic.play().catch((e) => console.log("Audio play prevented:", e));
 
-        // แก้ตรงนี้เพื่อให้แสดงชุดปุ่มควบคุมทั้งหมด
+        // แสดงชุดปุ่มควบคุมทั้งหมด
         document.getElementById("music-controller").classList.remove("hidden");
 
         sendToDiscord(
@@ -551,7 +557,7 @@
         );
       }
 
-      // ฟังก์ชันใหม่สำหรับแถบเลื่อนปรับเสียง
+      // ฟังก์ชันสำหรับแถบเลื่อนปรับเสียง
       function changeVolume() {
         let volumeSlider = document.getElementById("volume-slider");
         if (!bgMusic || !volumeSlider) return;
@@ -569,7 +575,6 @@
         }
       }
 
-      // ปรับปรุงปุ่ม Mute ให้จำระดับเสียงได้
       function toggleMusic() {
         const icon = document.getElementById("music-icon");
         let volumeSlider = document.getElementById("volume-slider");
@@ -679,7 +684,7 @@
 
         if (!msg) {
           showCuteAlert(
-            "พิมพ์ความรู้สึกให้เค้าชื่นใจหน่อยสิอ้วน 🥺💕",
+            "ไม่มีอะไรจะบอกใช่ไหม แต่เค้ามีอะไรจะบอกนะเค้ารักเธอนะ 🥺💕",
             "error",
             "secret-message",
           );
